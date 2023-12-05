@@ -67,7 +67,6 @@ class AutoGenBuilder:
         return os.path.join(folder, f"{currentTime}{title}.json")
 
     def getResponse(self, task, title="", load_path=""):
-
         building_task = execution_task = task
 
         config_list = autogen.config_list_from_json(
@@ -114,6 +113,10 @@ class AutoGenBuilder:
         #clear all agents
         builder.clear_all_agents(recycle_endpoint=True)
 
+    def promptTask(self):
+        self.print(f"<{config.terminalCommandEntryColor1}>Please specify a task below:</{config.terminalCommandEntryColor1}>")
+        return input(">>> ")
+
     def promptConfig(self):
         self.print("Enter maximum number of agents:")
         max_agents = input(">>> ")
@@ -138,8 +141,7 @@ class AutoGenBuilder:
         self.print("[press 'ctrl+q' to exit]")
         while True:
             self.print("Hi! I am ready for a new task.")
-            self.print("Please specify a task below:")
-            task = input(">>> ")
+            task = self.promptTask()
             if task == config.exit_entry:
                 break
             try:
@@ -187,9 +189,14 @@ def main():
 
     if args.config and os.path.isfile(args.config):
         task = args.default if args.default else ""
-        builder.getResponse(task=task, load_path=args.config)
-    elif args.default:
-        builder.getResponse(task=args.default)
+        if not task:
+            task = self.promptTask()
+        if task.strip():
+            builder.getResponse(task=task.strip(), load_path=args.config)
+        else:
+            config.print2("Task not specified!")
+    elif args.default.strip():
+        builder.getResponse(task=args.default.strip())
     else:
         builder.run()
 
