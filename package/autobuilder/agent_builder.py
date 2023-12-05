@@ -1,11 +1,13 @@
 """
-Modified from source: https://github.com/microsoft/autogen/blob/main/autogen/agentchat/contrib/agent_builder.py
+Modifed from source: https://github.com/microsoft/autogen/blob/main/autogen/agentchat/contrib/agent_builder.py
+At the time of writing, the script above is not available via "pip install pyautogen==0.2.0
 
-Plan for Changes:
-* customisable max_tokens
+Changes made:
+* max_tokens changed to 4096
 * customisable max_agents
 """
 
+from autobuilder import config
 import autogen
 import time
 import subprocess as sp
@@ -27,8 +29,8 @@ class AgentBuilder:
     """
 
     openai_server_name = "openai"
-    max_tokens = 945
-    max_agents = 5  # maximum number of agents build manager can create.
+    max_tokens = 4096 # "gpt-4-1106-preview" - context window: 128,000, but "This model supports at most 4096 completion tokens"
+    max_agents = config.max_agents  # maximum number of agents build manager can create.
 
     CODING_PROMPT = """Does the following task need programming (i.e., access external API or tool by coding) to solve,
     or use program may help the following task become easier?
